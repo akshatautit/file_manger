@@ -104,6 +104,75 @@ if (!fs.existsSync(FOLDER)) {
 }
 ```
 
+### Using the `os` module (`systemInfo.js`)
+
+This module demonstrates Node's built-in **`os`** module, which gives information about the machine the server is running on — useful for logging, diagnostics, or system-health checks in real backend applications.
+
+```javascript
+import os from "os";
+
+export function getSystemInfo() {
+  console.log("Platform:", os.platform()); // e.g. 'win32', 'linux', 'darwin'
+  console.log("CPU Cores:", os.cpus().length); // number of CPU cores
+  console.log("Total Memory (GB):", (os.totalmem() / 1024 ** 3).toFixed(2));
+  console.log("Free Memory (GB):", (os.freemem() / 1024 ** 3).toFixed(2));
+  console.log("Home Directory:", os.homedir());
+}
+```
+
+| Method          | What it returns                                        |
+| --------------- | ------------------------------------------------------ |
+| `os.platform()` | Operating system (`win32`, `linux`, `darwin`)          |
+| `os.cpus()`     | Array of CPU core details — `.length` gives core count |
+| `os.totalmem()` | Total system RAM (in bytes)                            |
+| `os.freemem()`  | Currently free RAM (in bytes)                          |
+| `os.homedir()`  | Path to the current user's home directory              |
+
+**Why this matters:** in real backend systems, this kind of info is used for monitoring dashboards, health-check endpoints, and deciding server capacity — this project uses it just to print system stats when the app starts.
+
+### Using the `url` module (`urlParser.js`)
+
+This module demonstrates Node's built-in **`URL`** class, which breaks a full URL string into its individual parts — without needing any external library.
+
+```javascript
+export function parseURL(urlString) {
+  const parsed = new URL(urlString);
+
+  const queryParams = {};
+  parsed.searchParams.forEach((value, key) => {
+    queryParams[key] = value;
+  });
+
+  console.log("Protocol:", parsed.protocol); // e.g. 'https:'
+  console.log("Host:", parsed.host); // e.g. 'paypoint.com'
+  console.log("Pathname:", parsed.pathname); // e.g. '/search'
+  console.log("Query Params:", queryParams); // e.g. { name: 'akshata', city: 'mumbai' }
+}
+```
+
+**Example:**
+
+```javascript
+parseURL("https://paypoint.com/search?name=akshata&city=mumbai");
+```
+
+**Output:**
+
+```
+Protocol: https:
+Host: paypoint.com
+Pathname: /search
+Query Params: { name: 'akshata', city: 'mumbai' }
+```
+
+**Where this concept is actually used in the app:** the server itself uses this same `URL` class to read query parameters from incoming requests — for example, extracting the filename from a request like `/view?name=notes.txt`:
+
+```javascript
+const filename = new URL(req.url, "http://localhost").searchParams.get("name");
+```
+
+**Why this matters:** understanding manual URL parsing makes it much easier to understand what frameworks like Express are doing automatically when you use `req.query` or `req.params`.
+
 ---
 
 ## ▶️ Getting Started
