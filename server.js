@@ -2,7 +2,7 @@ import http from 'http';
 import fs from 'fs';
 import path from 'path';
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const FOLDER = 'files';
 
 // Agar "files" folder nahi hai to bana do
